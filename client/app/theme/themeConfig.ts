@@ -1,9 +1,9 @@
 // theme/themeConfig.ts
 import type { ThemeConfig } from 'antd';
-import { Roboto_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import { theme as antdTheme } from "antd";
 
-const oxygen = Roboto_Mono({ subsets: ["latin"] });
+const oxygen = Inter({ subsets: ["latin"] });
 
 const theme: ThemeConfig = {
   token: {

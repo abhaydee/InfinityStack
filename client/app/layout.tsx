@@ -33,7 +33,7 @@ const RootLayout = ({ children }: React.PropsWithChildren) => {
     <html lang="en">
       <head>
         <title>InfinityStack</title>
-        <link rel="icon" href="/favicon.svg" />
+        <link rel="icon" href="./assets/images/InfinityStacks_Logo.webp" />
       </head>
       <body className={inter.className}>
         <StyledComponentsRegistry>

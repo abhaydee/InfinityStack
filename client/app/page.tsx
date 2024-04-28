@@ -33,7 +33,7 @@ const Home = () => {
     <Content className='!pl-3 !pr-3 md:!px-6'>
       <CardGradient hoverable={false} style={{ marginTop: 20 }}>
         <Space>
-          <img style={{ height: 200, width: 200 }} src="/assets/svgs/logo.svg"></img>
+          <img style={{ height: 100, width: 100 }} src="/assets/images/InfinityStacks_logo.webp"></img>
           <Space direction="vertical">
             <Title>Welcome to InfinityStack</Title>
             <Title level={4} type="secondary" >A synthetic asset platform built for Bitcoin.</Title>
