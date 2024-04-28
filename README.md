@@ -111,7 +111,7 @@ And run the frontend:
 yarn dev
 ```
 
-You should then be able to navigate to `localhost:3000` and start using the Dapp! For any questions, refer to the demo video as it walks through setting up the application, and feel free to reach out for other issues.
+You should then be able to navigate to `localhost:3000` and start using the Dapp!
 
 
 ## Contributing
