@@ -63,7 +63,15 @@ const RootLayout = ({ children }: React.PropsWithChildren) => {
                             if (e.key === "trade" && pathname.includes("trade") && pathname.split("/").length > 2) {
                               router.back()
                             } else {
-                              router.push(e.key)
+                              
+                              if(e.key=="stake") { 
+                                router.push("/trade/stake")
+                                
+                              }
+                              else  { 
+                                router.push(e.key)
+
+                              }
                             }
                           }}
                         />

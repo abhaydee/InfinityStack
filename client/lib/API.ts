@@ -155,6 +155,7 @@ export async function getBenchmarkDataForFeed(granularity: Granularity, asset: O
     // Symbols are denominated in USD.
     const { ticker, type } = asset;
     const symbol = `${type}.${ticker}/USD`;
+    console.log(symbol)
 
     // Create a reasonably large lookback window for good UX.
     // (now - size_of_bars * number_of_bars * seconds_in_a_minute) = start_time
@@ -205,6 +206,7 @@ export async function getPriceReference24hr(asset: OnChainAsset) {
 
     // Fetch data.
     const pythUrl = `${benchmarkBaseUrl}?symbol=${symbol}&resolution=${resolution}&from=${from}&to=${now}`;
+    
     const res = await fetch(pythUrl);
     if (!res.ok) {
         return 0;

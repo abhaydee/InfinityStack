@@ -4,7 +4,7 @@ import { Typography, Row, Button, Col, Layout, Form, InputNumber, Tooltip } from
 import _ from 'lodash';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { useBitThetixState } from '@/providers/BitThetixStateProvider';
-import React from 'react';
+import React, { useState } from 'react';
 import { EmptyOnChainAsset, appDetails } from '@/lib/constants';
 import { getKeyFromAsset } from '@/lib/util';
 import { ContractCallOptions, openContractCall } from '@stacks/connect';
@@ -22,7 +22,7 @@ export default function Order({ type }: { type: string }) {
 
     const { network, address = "" } = useStacks();
     const { addOrderToast } = useTransactionToasts();
-
+    const [sellBalance, setSellBalance] = useState(0)
     const params = useParams();
     const ticker = (params["ticker"] || "") as string;
 
@@ -39,10 +39,13 @@ export default function Order({ type }: { type: string }) {
     const assetPrice = onChainAsset.price;
 
     const num = form.getFieldValue("Amount") || 0;
-    const assetAmount = (num / assetPrice);
+    let assetAmount = (num / assetPrice) ;
     const btcToBuy = (num / btcPrice);
-
     const isBTC = ticker === "BTC";
+
+    
+    
+    
 
     const buyAsset = async () => {
         const tokenPostCondition = makeStandardFungiblePostCondition(
@@ -79,7 +82,8 @@ export default function Order({ type }: { type: string }) {
 
         // Max-sell is balance (sloppy fix for roundoff error).
         const balance = balances[getKeyFromAsset(onChainAsset)];
-
+        
+        setSellBalance(balance * assetPrice)
         const tokenPostCondition = makeContractFungiblePostCondition(
             "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
             "bitthetix",
@@ -141,7 +145,11 @@ export default function Order({ type }: { type: string }) {
                         </Col>
                         <Col span={6}>
                             <Button onClick={() => {
-                                form.setFieldsValue({ "Amount": `${sBTCBalance * btcPrice}` })
+                                form.setFieldsValue({ "Amount": shouldBuy ? `${sBTCBalance * btcPrice * 0.50}`  : sellBalance }
+                                )
+                                const balance = balances[getKeyFromAsset(onChainAsset)];
+                                
+                                setSellBalance(balance * assetPrice)
                             }} style={{ width: '100%', height: '100%' }}>Max</Button>
                         </Col>
                     </Row>
@@ -161,15 +169,15 @@ export default function Order({ type }: { type: string }) {
             </Row>
             <Row justify="space-between">
                 <Text type="secondary">Trading fee &nbsp;(sBTC):</Text>
-                <Text>0</Text>
+                <Text>{btcToBuy?  btcToBuy * 0.001 : 0}</Text>
             </Row>
-            <Row justify="space-between">
+            {/* <Row justify="space-between">
                 <Text type="secondary">I.V fee <Tooltip title="The Implied Volatility (IV) fee is a fee applied depending on the asset's volatility. It is disabled for testnet."><QuestionCircleOutlined /></Tooltip> (sBTC):</Text>
                 <Text>0</Text>
-            </Row>
+            </Row> */}
             <Row justify="space-between" className='!mb-6'>
                 <Text type="secondary">You {shouldBuy ? "get" : "sell"} ({ticker}):</Text>
-                <Text>{(isNaN(assetAmount) ? 0 : assetAmount).toLocaleString("en-US", { maximumFractionDigits: 10 })}</Text>
+                <Text>{(isNaN(assetAmount) ? 0 : assetAmount - assetAmount*0.001).toLocaleString("en-US", { maximumFractionDigits: 10 })}</Text>
             </Row>
             <Col className='!mb-6'>
                 <Text type="secondary">* The price of the asset you buy/sell is not guaratneed to match the price at the time of your order. This is due to the Bitcoin block time of ~10 minutes.</Text>

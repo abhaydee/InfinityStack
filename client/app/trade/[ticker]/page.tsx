@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 
-import { Typography, Row, Button, Card, Col, Layout, Space, Image, Tabs, theme } from 'antd';
+import { Typography, Row, Button, Card, Col, Layout, Space, Image, Tabs, theme, Form } from 'antd';
 import { ChartComponent } from '@/lib/UIComponents';
 import _ from 'lodash';
 import { ArrowLeftOutlined } from '@ant-design/icons';
@@ -18,6 +18,8 @@ const { Title, Text } = Typography;
 const { Content } = Layout;
 
 export default function Page({ params }: { params: { ticker: string } }) {
+    const [form] = Form.useForm();
+    
     const router = useRouter();
     const token = theme.useToken();
 
@@ -31,10 +33,15 @@ export default function Page({ params }: { params: { ticker: string } }) {
         chartLoading,
         offChainAssets,
         balances,
+        sBTCBalance
     } = useBitThetixState();
 
     // Calculate 24hr change, if data available.
     let dailyChange = 0;
+    const btcPrice = (Array.from(assets.values()).find(a => a.ticker === "BTC")?.price || 0);
+    const num = form.getFieldValue("Amount") || 0;
+
+    const btcToBuy = (num / btcPrice);
     const onChainAsset = Array.from(assets.values()).find(a => a.ticker === params.ticker) || EmptyOnChainAsset;
     const offchainAsset = offChainAssets[getKeyFromAsset(onChainAsset)] || EmptyOffChainAsset;
     if (offchainAsset.price) {
@@ -73,12 +80,21 @@ export default function Page({ params }: { params: { ticker: string } }) {
                     >
                         <Card
                             title={
-                                <Row justify="space-between" >
-                                    <Text type="secondary">Balance: </Text>
-                                    <Space direction='vertical' align="end">
-                                        <Text style={{ color: GreenColor }}>${(assetHoldings).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: assetHoldings > 1 ? 2 : 6 })}<Text type="secondary"> | {(balance).toLocaleString("en-US", { maximumFractionDigits: 10 })} {params.ticker}</Text></Text>
-                                    </Space>
-                                </Row>
+                                <>
+                                    <Row justify="space-between" >
+                                        <Text type="secondary">Balance: </Text>
+                                        <Space direction='vertical' align="end">
+                                            <Text style={{ color: GreenColor }}>${(assetHoldings).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: assetHoldings > 1 ? 2 : 6 })}<Text type="secondary"> | {(balance).toLocaleString("en-US", { maximumFractionDigits: 10 })} {params.ticker}</Text>{"\t\t"}</Text>
+                                        </Space>
+                                    </Row>
+                                    <Row justify="space-between" >
+                                        <Text type="secondary"> TradeIn Amount Avl BTC : </Text>
+                                        <Space direction='vertical' align="end">
+                                            <Text style={{ color: GreenColor }}>${(sBTCBalance * btcPrice * 0.50).toLocaleString("en-US", { maximumFractionDigits: 3 })}<Text type="secondary"> | {<Text>{(sBTCBalance * 0.50).toLocaleString("en-US", { maximumFractionDigits: 10 })}</Text>
+                                            } {"BTC"}</Text>{"\t\t"}</Text>
+                                        </Space>
+                                    </Row>
+                                </>
                             }
                             style={{ borderRadius: 0, borderWidth: 0, height: '100%' }}
                             bodyStyle={{ padding: 0 }}
