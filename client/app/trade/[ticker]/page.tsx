@@ -19,7 +19,6 @@ const { Content } = Layout;
 
 export default function Page({ params }: { params: { ticker: string } }) {
     const [form] = Form.useForm();
-    
     const router = useRouter();
     const token = theme.useToken();
 
@@ -67,7 +66,8 @@ export default function Page({ params }: { params: { ticker: string } }) {
                                         style={{ marginTop: 20, marginBottom: 20 }}
                                     />
                                     <Space direction="vertical" style={{ marginLeft: 10 }}>
-                                        <Title level={3}>{params.ticker}</Title>
+                                        {params.ticker === "BTC" ? <Title level={3}>sBTC</Title> : <Title level={3}>{params.ticker}</Title>}
+                                        
                                     </Space>
                                 </Space>
                             </Content>
@@ -84,7 +84,7 @@ export default function Page({ params }: { params: { ticker: string } }) {
                                     <Row justify="space-between" >
                                         <Text type="secondary">Balance: </Text>
                                         <Space direction='vertical' align="end">
-                                            <Text style={{ color: GreenColor }}>${(assetHoldings).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: assetHoldings > 1 ? 2 : 6 })}<Text type="secondary"> | {(balance).toLocaleString("en-US", { maximumFractionDigits: 10 })} {params.ticker}</Text>{"\t\t"}</Text>
+                                            <Text style={{ color: GreenColor }}>${(params.ticker == "BTC" ? sBTCBalance * btcPrice : assetHoldings).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: assetHoldings > 1 ? 2 : 6 })}<Text type="secondary"> | {(params.ticker == "BTC" ?  sBTCBalance: balance).toLocaleString("en-US", { maximumFractionDigits: 10 })} {params.ticker}</Text>{"\t\t"}</Text>
                                         </Space>
                                     </Row>
                                     <Row justify="space-between" >
@@ -101,7 +101,8 @@ export default function Page({ params }: { params: { ticker: string } }) {
                             hoverable={false}
                         >
                             <Content className='!px-6'>
-                                <Tabs
+                                {params.ticker !=="BTC" ?
+                                    <Tabs
                                     defaultActiveKey="1"
                                     items={[
                                         {
@@ -115,7 +116,17 @@ export default function Page({ params }: { params: { ticker: string } }) {
                                             children: (<Order type={"sell"} />),
                                         },
                                     ]}
-                                />
+                                /> : 
+                                <Tabs
+                                items={[
+                                    {
+                                        label: 'Stake',
+                                        key: '1',
+                                        children: (<Order type={"buy"} />),
+                                    },
+                                ]}
+                            />
+                                }
                             </Content>
                         </Card>
                     </Card>

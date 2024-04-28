@@ -14,7 +14,6 @@ import { UTCTimestamp } from "lightweight-charts";
 import { Granularity, SatoshisPerBTC } from "./constants";
 import { getKeyFromAsset } from "./util";
 
-// Root user contract asset (owner of BitThetix).
 const contractAddress = 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM';
 
 

@@ -54,7 +54,7 @@ const RootLayout = ({ children }: React.PropsWithChildren) => {
                         <Menu
                           mode="horizontal"
                           theme="dark"
-                          selectedKeys={[(pathname?.split("/")[1] || "/")]}
+                          
                           items={items}
                           overflowedIndicator={<MenuOutlined />}
                           style={{ flex: 1, minWidth: 0, backgroundColor: 'transparent' }}
@@ -65,7 +65,7 @@ const RootLayout = ({ children }: React.PropsWithChildren) => {
                             } else {
                               
                               if(e.key=="stake") { 
-                                router.push("/trade/stake")
+                                router.push("/trade/BTC")
                                 
                               }
                               else  { 
