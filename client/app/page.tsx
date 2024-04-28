@@ -35,7 +35,7 @@ const Home = () => {
         <Space>
           <img style={{ height: 100, width: 100 }} src="/assets/images/InfinityStacks_logo.webp"></img>
           <Space direction="vertical">
-            <Title>Welcome to InfinityStack</Title>
+            <Title>Welcome to InfinityStacks</Title>
             <Title level={4} type="secondary" >Unlimited Potential, Infinite Possibilities.</Title>
           </Space>
         </Space>
