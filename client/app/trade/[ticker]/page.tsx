@@ -72,7 +72,7 @@ export default function Page({ params }: { params: { ticker: string } }) {
                                 </Space>
                             </Content>
                         }
-                        extra={<Content className='!pl-3 !pr-3 md:!px-6'><Button onClick={() => router.back()}><ArrowLeftOutlined /></Button></Content>}
+                        extra={<Content className=' !pl-3 !pr-3 md:!px-6'><Button onClick={() => router.back()}><ArrowLeftOutlined /></Button></Content>}
                         style={{ borderRadius: 0, borderRightWidth: 0, borderLeftWidth: 0, height: '100%' }}
                         headStyle={{ padding: 0 }}
                         bodyStyle={{ padding: 0 }}

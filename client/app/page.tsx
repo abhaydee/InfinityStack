@@ -36,7 +36,7 @@ const Home = () => {
           <img style={{ height: 100, width: 100 }} src="/assets/images/InfinityStacks_logo.webp"></img>
           <Space direction="vertical">
             <Title>Welcome to InfinityStack</Title>
-            <Title level={4} type="secondary" >A synthetic asset platform built for Bitcoin.</Title>
+            <Title level={4} type="secondary" >Unlimited Potential, Infinite Possibilities.</Title>
           </Space>
         </Space>
       </CardGradient>
@@ -54,7 +54,7 @@ const Home = () => {
           <Card style={{ textAlign: 'center', ...(isMobile ? { borderBottomLeftRadius: 0, borderBottomRightRadius: 0 } : { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }) }} hoverable={false}>
             <Space direction="vertical">
               <Title level={2} style={{ marginTop: 0 }}>Buy any Asset</Title>
-              <Text type='secondary'>Trade Altcoins, Commodities, and FX on the Bitcoin network</Text>
+              <Text type='secondary'>Trade Altcoins and FX on the Bitcoin network</Text>
               <Button
                 onClick={() => router.push('/trade')}
                 type="primary"
