@@ -18,11 +18,13 @@
 (define-constant err-invalid-caller (err u4))
 (define-constant err-forbidden (err u403))
 (define-constant err-btc-tx-already-used (err u500))
+(define-constant err-contract-paused (err u600))
 
 ;; data vars
 ;;
 (define-data-var contract-owner principal tx-sender)
 (define-data-var bitcoin-wallet-public-key (optional (buff 33)) none)
+(define-data-var is-paused bool false)
 
 ;; stores all btc txids that have been used to mint or burn sBTC
 (define-map amounts-by-btc-tx (buff 32) int)
@@ -100,6 +102,33 @@
 	)
 )
 
+;; Pause the contract
+(define-public (pause-contract)
+  (begin
+    (try! (is-contract-owner))
+    (var-set is-paused true)
+    (ok true)
+  )
+)
+
+;; Unpause the contract
+(define-public (unpause-contract)
+  (begin
+    (try! (is-contract-owner))
+    (var-set is-paused false)
+    (ok true)
+  )
+)
+
+;; Emergency withdraw all sBTC
+(define-public (emergency-withdraw (amount uint) (recipient principal))
+  (begin
+    (try! (is-contract-owner))
+    (try! (ft-transfer? sbtc amount (as-contract tx-sender) recipient))
+    (ok true)
+  )
+)
+
 ;; read only functions
 ;;
 (define-read-only (get-bitcoin-wallet-public-key)
@@ -136,6 +165,11 @@
 
 (define-read-only (get-amount-by-btc-txid (btc-txid (buff 32)))
     (map-get? amounts-by-btc-tx btc-txid)
+)
+
+;; Check if the contract is paused
+(define-read-only (is-paused)
+  (var-get is-paused)
 )
 
 ;; private functions
