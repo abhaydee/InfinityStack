@@ -4,7 +4,7 @@ import { Typography, Row, Button, Col, Layout, Form, InputNumber, Tooltip } from
 import _ from 'lodash';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { useBitThetixState } from '@/providers/BitThetixStateProvider';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { EmptyOnChainAsset, appDetails } from '@/lib/constants';
 import { getKeyFromAsset } from '@/lib/util';
 import { ContractCallOptions, openContractCall } from '@stacks/connect';
@@ -17,6 +17,7 @@ const { Content } = Layout;
 
 export default function Order({ type }: { type: string }) {
     const [form] = Form.useForm();
+    const [assetId, setAssetId] = useState<number | undefined>();
 
     const shouldBuy = type === "buy";
 
@@ -43,9 +44,17 @@ export default function Order({ type }: { type: string }) {
     const btcToBuy = (num / btcPrice);
     const isBTC = ticker === "BTC";
 
+    const fetchCurrentPrice = async (assetId: number) => {
+        const price = await getCurrentPrice(assetId, network);
+        setCurrentPrice(price);
+    };
 
-
-
+    // Call this function when the component mounts or when the asset changes
+    useEffect(() => {
+        if (assetId) {
+            fetchCurrentPrice(assetId);
+        }
+    }, [assetId]);
 
     const buyAsset = async () => {
         const tokenPostCondition = makeStandardFungiblePostCondition(
