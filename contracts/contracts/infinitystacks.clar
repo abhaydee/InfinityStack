@@ -5,6 +5,7 @@
 (define-constant err-append-supported-feed (err u102))
 (define-constant err-insufficient-funds (err u3766))
 (define-constant err-get-sBTC-price (err u104))
+(define-constant err-user-not-found (err u105))
 
 (define-fungible-token thetix-USD)
 
@@ -120,7 +121,6 @@
   )
 )
 
-
 ;; Get total thetix USD balance for a user account.
 (define-read-only (get-global-asset-balance (asset-id uint))
   (let (
@@ -224,6 +224,100 @@
         (map-set user-asset-balances assets-balance-key (- current-balance amount))
         ;; #[allow(unchecked_data)]
         (print amount-of-sbtc-to-receive)
+        (ok true)
+    )
+  )
+)
+
+;; Transfer Thetix-USD between users
+(define-public (transfer-thetix-USD (recipient principal) (amount uint))
+  (begin
+    (asserts! (>= (ft-get-balance thetix-USD tx-sender) amount) err-insufficient-funds)
+    (try! (ft-transfer? thetix-USD amount tx-sender recipient))
+    (ok true)
+  )
+)
+
+;; Burn Thetix-USD tokens
+(define-public (burn-thetix-USD (amount uint))
+  (begin
+    (asserts! (>= (ft-get-balance thetix-USD tx-sender) amount) err-insufficient-funds)
+    (try! (ft-burn? thetix-USD amount tx-sender))
+    (ok true)
+  )
+)
+
+;; Get user asset balance
+(define-read-only (get-user-asset-balance (user principal) (asset-id uint))
+  (let (
+        (balance (map-get? user-asset-balances {user: user, asset-id: asset-id}))
+    ) 
+    (if (is-eq balance none) (ok u0) (ok (unwrap-panic balance)))
+  )
+)
+
+;; Get global asset balance
+(define-read-only (get-global-asset-balance (asset-id uint))
+  (let (
+        (balance (map-get? global-asset-amounts asset-id))
+    ) 
+    (if (is-eq balance none) (ok u0) (ok (unwrap-panic balance)))
+  )
+)
+
+;; Update user profile
+(define-public (update-user-profile (name (string-ascii 100)))
+  (let (
+        (user-account (map-get? user-accounts tx-sender))
+    )
+    (begin
+        (if (is-eq user-account none)
+            (map-insert user-accounts tx-sender {name: name, tUSD-amount: u0})
+            (map-set user-accounts tx-sender {name: name, tUSD-amount: (get tUSD-amount (unwrap-panic user-account))})
+        )
+        (ok true)
+    )
+  )
+)
+
+;; Get user profile
+(define-read-only (get-user-profile (user principal))
+  (let (
+        (user-account (map-get? user-accounts user))
+    )
+    (if (is-eq user-account none)
+        (err err-user-not-found)
+        (ok (unwrap-panic user-account))
+    )
+)
+
+;; Deposit Thetix-USD into user's account
+(define-public (deposit-thetix-USD (amount uint))
+  (let (
+        (user-account (map-get? user-accounts tx-sender))
+    )
+    (begin
+        (asserts! (>= (ft-get-balance thetix-USD tx-sender) amount) err-insufficient-funds)
+        (try! (ft-transfer? thetix-USD amount tx-sender (as-contract tx-sender)))
+        (if (is-eq user-account none)
+            (map-insert user-accounts tx-sender {name: "", tUSD-amount: amount})
+            (map-set user-accounts tx-sender {name: (get name (unwrap-panic user-account)), tUSD-amount: (+ (get tUSD-amount (unwrap-panic user-account)) amount)})
+        )
+        (ok true)
+    )
+  )
+)
+
+;; Withdraw Thetix-USD from user's account
+(define-public (withdraw-thetix-USD (amount uint))
+  (let (
+        (user-account (map-get? user-accounts tx-sender))
+    )
+    (begin
+        (asserts! (is-some user-account) err-user-not-found)
+        (asserts! (>= (get tUSD-amount (unwrap-panic user-account)) amount) err-insufficient-funds)
+        (try! (ft-transfer? thetix-USD amount (as-contract tx-sender) tx-sender))
+        (map-set user-accounts tx-sender {name: (get name (unwrap-panic user-account)), tUSD-amount: (- (get tUSD-amount (unwrap-panic user-account)) amount)})
         (ok true)
     )
   )

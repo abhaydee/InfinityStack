@@ -5,8 +5,9 @@ authors = []
 telemetry = true
 cache_dir = './.cache'
 requirements = []
+
 [contracts.bitthetix]
-path = 'contracts/bitthetix.clar'
+path = 'contracts/infinitystacks.clar'
 clarity_version = 2
 epoch = 2.4
 
@@ -14,8 +15,7 @@ epoch = 2.4
 path = 'contracts/mock-price-feed.clar'
 clarity_version = 2
 epoch = 2.4
-[repl.analysis]
-passes = ['check_checker']
+
 
 [contracts.sbtc]
 path = 'contracts/sBTC/asset.clar'
@@ -31,6 +31,10 @@ epoch = 2.4
 path = 'contracts/sBTC/clarity-bitcoin-mini.clar'
 clarity_version = 2
 epoch = 2.4
+
+
+[repl.analysis]
+passes = ['check_checker']
 
 [repl.analysis.check_checker]
 strict = false

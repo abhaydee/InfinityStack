@@ -33,7 +33,7 @@ plan:
             contract-name: bitthetix
             expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             cost: 76600
-            path: contracts/bitthetix.clar
+            path: contracts/infinitystacks.clar
             anchor-block-only: true
             clarity-version: 2
         - contract-publish:
