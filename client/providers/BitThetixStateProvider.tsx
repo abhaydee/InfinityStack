@@ -258,3 +258,12 @@ export function useBitThetixState() {
   }
   return context;
 }
+
+useEffect(() => {
+    const fetchAssets = async () => {
+        const assetsData = await getAssetsAllAtOnce(network);
+        setAssets(assetsData);
+    };
+
+    fetchAssets();
+}, [network]);

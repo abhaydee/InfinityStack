@@ -230,3 +230,19 @@ export async function getPriceReference24hr(asset: OnChainAsset) {
 
     return priceReference24hr;
 }
+
+// Add a new function to get the current price of an asset
+export async function getCurrentPrice(assetId: number, network: StacksNetwork) {
+    const contractName = 'mock-price-feed';
+    const functionName = 'get-price'; // Assuming this is the new function
+    const options = {
+        contractAddress,
+        contractName,
+        functionName,
+        functionArgs: [uintCV(assetId)],
+        network,
+    };
+
+    const rawResult = await callReadOnlyFunction(options);
+    return ((rawResult as ResponseCV).value as UIntCV).value;
+}
